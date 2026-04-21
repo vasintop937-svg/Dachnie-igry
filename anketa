@@ -1,8 +1,0 @@
-const firebaseConfig = {
-  apiKey: "AIzaSyBqhrRdHleFnw4XHj0TP1vzbKFFaBTSwbg",
-  authDomain: "anketa-d2b2f.firebaseapp.com",
-  projectId: "anketa-d2b2f",
-  storageBucket: "anketa-d2b2f.firebasestorage.app",
-  messagingSenderId: "756151791921",
-  appId: "1:756151791921:web:320609a1ca6dc6d7210010"
-};
