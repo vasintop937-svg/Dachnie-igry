@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Команды — Дачные Игры</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Unbounded:wght@400;600;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#e8b828;--gold-light:#fff0a0;--gold-dark:#a07810;--cream:#f8f0d8;--dark:#060e02;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:radial-gradient(ellipse at 50% 0%,#1e3a08 0%,#0c1804 50%,var(--dark) 100%);min-height:100vh;font-family:'Caveat',cursive;color:var(--cream);overflow-x:hidden;}
+
+/* NAV */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #1a3008;position:sticky;top:0;z-index:100;background:rgba(6,14,2,.92);backdrop-filter:blur(8px);}
+.nav-back{font-family:‘Unbounded’,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#5a8030;text-decoration:none;display:flex;align-items:center;gap:6px;transition:color .2s;}
+.nav-back:hover{color:var(–gold);}
+.nav-title{font-family:‘Playfair Display’,serif;font-size:16px;color:var(–gold);letter-spacing:1px;}
+.nav-anketa{font-family:‘Unbounded’,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#5a8030;text-decoration:none;transition:color .2s;}
+.nav-anketa:hover{color:var(–gold);}
+
+/* HEADER */
+.page-header{text-align:center;padding:32px 20px 8px;}
+.page-header h1{font-family:‘Playfair Display’,serif;font-size:clamp(22px,6vw,36px);color:var(–gold);text-shadow:0 0 30px rgba(232,184,40,.35);letter-spacing:2px;margin-bottom:6px;}
+.page-header p{font-family:‘Unbounded’,sans-serif;font-size:8px;letter-spacing:5px;text-transform:uppercase;color:#4a7828;}
+.gold-line{width:180px;height:1px;background:linear-gradient(90deg,transparent,var(–gold),transparent);margin:16px auto;}
+
+/* CONTAINER */
+.container{max-width:560px;margin:0 auto;padding:0 16px 40px;}
+
+/* TEAM CARD */
+.team-card{background:linear-gradient(160deg,#162208,#0c1604);border-radius:10px;overflow:hidden;margin-bottom:16px;transition:transform .2s;}
+.team-card-header{display:flex;align-items:center;gap:16px;padding:18px 18px 16px;cursor:pointer;user-select:none;}
+.team-card-header:active{opacity:.85;}
+.team-heraldry{width:72px;height:72px;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 0 10px rgba(232,184,40,.2));}
+.team-heraldry-placeholder{width:72px;height:72px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:36px;}
+.team-header-info{flex:1;min-width:0;}
+.team-name{font-family:‘Playfair Display’,serif;font-size:clamp(17px,4.5vw,22px);line-height:1.2;margin-bottom:4px;}
+.team-family{font-family:‘Unbounded’,sans-serif;font-size:7px;letter-spacing:3px;text-transform:uppercase;color:#4a7020;margin-bottom:6px;}
+.team-traits{font-family:‘Unbounded’,sans-serif;font-size:7px;letter-spacing:1px;text-transform:uppercase;opacity:.7;}
+.team-toggle{font-size:18px;color:#3a5820;flex-shrink:0;transition:transform .3s;}
+.team-card.open .team-toggle{transform:rotate(90deg);}
+
+/* TEAM BODY */
+.team-body{display:none;padding:0 18px 20px;border-top:1px solid #1a3008;}
+.team-body.open{display:block;}
+.team-motto{font-family:‘Caveat’,cursive;font-size:18px;font-style:italic;padding:12px 14px;border-radius:6px;margin:14px 0;border:1px solid;line-height:1.3;}
+.team-story{font-family:‘Playfair Display’,serif;font-size:15px;color:#a0c870;line-height:1.7;margin-bottom:16px;}
+.team-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+.stat-item{background:rgba(0,0,0,.2);border-radius:5px;padding:10px 12px;}
+.stat-label{font-family:‘Unbounded’,sans-serif;font-size:7px;letter-spacing:2px;text-transform:uppercase;color:#4a7020;margin-bottom:3px;}
+.stat-value{font-family:‘Caveat’,cursive;font-size:16px;color:var(–cream);}
+
+/* BOTTOM BUTTONS */
+.bottom-btns{display:flex;flex-direction:column;gap:10px;margin-top:32px;padding:0 0 20px;}
+.btn-primary{display:block;width:100%;padding:15px;background:linear-gradient(135deg,#3a7010,#2a5808);border:1px solid var(–gold-dark);border-radius:4px;color:var(–gold-light);font-family:‘Unbounded’,sans-serif;font-size:11px;letter-spacing:4px;text-transform:uppercase;text-align:center;text-decoration:none;transition:all .3s;box-shadow:0 4px 20px rgba(0,0,0,.4);}
+.btn-primary:hover{background:linear-gradient(135deg,#4a8818,#386010);}
+.btn-secondary{display:block;width:100%;padding:14px;background:transparent;border:1px solid #3a5820;border-radius:4px;color:#5a8030;font-family:‘Unbounded’,sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;text-align:center;text-decoration:none;transition:all .3s;}
+.btn-secondary:hover{border-color:var(–gold-dark);color:var(–gold);}
+
+/* ROSTER */
+.roster-block{margin-top:14px;padding-top:14px;border-top:1px solid #1a3008;}
+.roster-title{font-family:‘Unbounded’,sans-serif;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:#4a7828;margin-bottom:10px;}
+.roster-list{display:flex;flex-direction:column;gap:6px;}
+.roster-member{display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(0,0,0,.2);border-radius:5px;border:1px solid #1a3008;}
+.roster-num{font-family:‘Unbounded’,sans-serif;font-size:8px;color:#3a5820;width:18px;flex-shrink:0;}
+.roster-name{font-family:‘Playfair Display’,serif;font-size:16px;color:var(–cream);}
+.roster-age{font-family:‘Unbounded’,sans-serif;font-size:7px;letter-spacing:1px;color:#4a7020;margin-left:auto;flex-shrink:0;}
+.roster-empty{font-family:‘Playfair Display’,serif;font-style:italic;font-size:15px;color:#3a5820;text-align:center;padding:12px;}
+</style>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+</head>
+<body>
+
+<!-- NAV -->
+
+<nav class="nav">
+  <a href="index.html" class="nav-back">‹ Назад</a>
+  <span class="nav-title">Команды</span>
+  <a href="anketa.html" class="nav-anketa">Анкета ›</a>
+</nav>
+
+<div class="page-header">
+  <h1>Четыре фамилии</h1>
+  <p>Кубок · Дачные Игры · MMXXVI</p>
+  <div class="gold-line"></div>
+</div>
+
+<div class="container">
+
+  <!-- ВАСИЛИСКИ И ВАСИЛЬКИ -->
+
+  <div class="team-card" id="card-vasiny">
+    <div class="team-card-header" onclick="toggleCard('vasiny')">
+      <img class="team-heraldry" src="images/gerb_vasiny.PNG" alt="" onerror="this.outerHTML='<div class=\'team-heraldry-placeholder\'>🔵</div>'"/>
+      <div class="team-header-info">
+        <div class="team-name" style="color:#80b8ff;">Василиски и Васильки</div>
+        <div class="team-family">Дом Васиных</div>
+        <div class="team-traits" style="color:#80b8ff;">Неординарные · Остроумные · Древний Род</div>
+      </div>
+      <span class="team-toggle">›</span>
+    </div>
+    <div class="team-body" id="body-vasiny">
+      <div class="team-motto" style="color:#80b8ff;background:rgba(60,100,200,.12);border-color:#3060c0;">«Где мы — там смех и удивленье»</div>
+      <div class="team-story">Один из древнейших родов турнира. Говорят, их предки ещё на первых дачных посиделках умудрялись удивить всех чем-то неожиданным. Василиски и Васильки — это те, кто приходит без плана, но уходит с победой. Или хотя бы с лучшей историей вечера. Непредсказуемые, остроумные, всегда с сюрпризом в рукаве.</div>
+      <div class="team-stats">
+        <div class="stat-item"><div class="stat-label">Возраст рода</div><div class="stat-value">Древний</div></div>
+        <div class="stat-item"><div class="stat-label">Стихия</div><div class="stat-value">⚡ Молния</div></div>
+        <div class="stat-item"><div class="stat-label">Сила</div><div class="stat-value">Юмор и хитрость</div></div>
+        <div class="stat-item"><div class="stat-label">Цвет</div><div class="stat-value" style="color:#80b8ff;">Синий</div></div>
+      </div>
+      <div class="roster-block"><div class="roster-title">⚔ Состав команды</div><div class="roster-list" id="roster-vasiny"></div></div>
+    </div>
+  </div>
+
+  <!-- МОРОЗ И КО -->
+
+  <div class="team-card" id="card-moroz">
+    <div class="team-card-header" onclick="toggleCard('moroz')">
+      <img class="team-heraldry" src="images/gerb_moroz.PNG" alt="" onerror="this.outerHTML='<div class=\'team-heraldry-placeholder\'>❄</div>'"/>
+      <div class="team-header-info">
+        <div class="team-name" style="color:#80e8ff;">Мороз и Ко</div>
+        <div class="team-family">Дом Морозовых</div>
+        <div class="team-traits" style="color:#80e8ff;">Пробивные · Упорные · Древний Род</div>
+      </div>
+      <span class="team-toggle">›</span>
+    </div>
+    <div class="team-body" id="body-moroz">
+      <div class="team-motto" style="color:#80e8ff;background:rgba(40,140,200,.12);border-color:#2880c0;">«Закалены — непоколебимы»</div>
+      <div class="team-story">Древний род с железным характером. Говорят, Морозовы не проигрывают — они просто иногда откладывают победу. Пробивные, упорные, не знающие слова «сдаться». Если на поле появился Мороз и Ко — соперники уже чувствуют холодок за спиной.</div>
+      <div class="team-stats">
+        <div class="stat-item"><div class="stat-label">Возраст рода</div><div class="stat-value">Древний</div></div>
+        <div class="stat-item"><div class="stat-label">Стихия</div><div class="stat-value">❄ Лёд</div></div>
+        <div class="stat-item"><div class="stat-label">Сила</div><div class="stat-value">Упорство и сила</div></div>
+        <div class="stat-item"><div class="stat-label">Цвет</div><div class="stat-value" style="color:#80e8ff;">Ледяной</div></div>
+      </div>
+      <div class="roster-block"><div class="roster-title">⚔ Состав команды</div><div class="roster-list" id="roster-moroz"></div></div>
+    </div>
+  </div>
+
+  <!-- ТОМЛЁНЫЕ ПОД СОЛНЦЕМ -->
+
+  <div class="team-card" id="card-tomily">
+    <div class="team-card-header" onclick="toggleCard('tomily')">
+      <img class="team-heraldry" src="images/gerb_tomily.PNG" alt="" onerror="this.outerHTML='<div class=\'team-heraldry-placeholder\'>☀</div>'"/>
+      <div class="team-header-info">
+        <div class="team-name" style="color:#ffb040;">Томлёные под солнцем</div>
+        <div class="team-family">Дом Томиловых</div>
+        <div class="team-traits" style="color:#ffb040;">Азартные · Страстные · Молодой Род</div>
+      </div>
+      <span class="team-toggle">›</span>
+    </div>
+    <div class="team-body" id="body-tomily">
+      <div class="team-motto" style="color:#ffb040;background:rgba(200,100,0,.12);border-color:#c06000;">«Горим — и побеждаем»</div>
+      <div class="team-story">Молодой, но уже легендарный род. Томиловы горят на каждом соревновании — в прямом и переносном смысле. Азартные, страстные, они вкладывают в каждый конкурс всю душу. Проигрывают красиво, побеждают громко.</div>
+      <div class="team-stats">
+        <div class="stat-item"><div class="stat-label">Возраст рода</div><div class="stat-value">Молодой</div></div>
+        <div class="stat-item"><div class="stat-label">Стихия</div><div class="stat-value">🔥 Огонь</div></div>
+        <div class="stat-item"><div class="stat-label">Сила</div><div class="stat-value">Азарт и страсть</div></div>
+        <div class="stat-item"><div class="stat-label">Цвет</div><div class="stat-value" style="color:#ffb040;">Огненный</div></div>
+      </div>
+      <div class="roster-block"><div class="roster-title">⚔ Состав команды</div><div class="roster-list" id="roster-tomily"></div></div>
+    </div>
+  </div>
+
+  <!-- ЛОГИНЫ ЧЕМПИОНОВ -->
+
+  <div class="team-card" id="card-loginovy">
+    <div class="team-card-header" onclick="toggleCard('loginovy')">
+      <img class="team-heraldry" src="images/gerb_loginovy.PNG" alt="" onerror="this.outerHTML='<div class=\'team-heraldry-placeholder\'>🌿</div>'"/>
+      <div class="team-header-info">
+        <div class="team-name" style="color:#90e880;">Логины Чемпионов</div>
+        <div class="team-family">Дом Логиновых</div>
+        <div class="team-traits" style="color:#90e880;">Умные · Трудолюбивые · Молодой Род</div>
+      </div>
+      <span class="team-toggle">›</span>
+    </div>
+    <div class="team-body" id="body-loginovy">
+      <div class="team-motto" style="color:#90e880;background:rgba(40,140,60,.12);border-color:#2a8030;">«Умом и трудом — к вершине»</div>
+      <div class="team-story">Молодой род с древней мудростью. Логиновы не торопятся — они думают. Пока другие бегут, они уже знают куда. Стратегия, терпение и труд — вот их оружие. Недооценить Логиновых — самая частая ошибка соперников.</div>
+      <div class="team-stats">
+        <div class="stat-item"><div class="stat-label">Возраст рода</div><div class="stat-value">Молодой</div></div>
+        <div class="stat-item"><div class="stat-label">Стихия</div><div class="stat-value">🌿 Лес</div></div>
+        <div class="stat-item"><div class="stat-label">Сила</div><div class="stat-value">Стратегия и труд</div></div>
+        <div class="stat-item"><div class="stat-label">Цвет</div><div class="stat-value" style="color:#90e880;">Лесной зелёный</div></div>
+      </div>
+      <div class="roster-block"><div class="roster-title">⚔ Состав команды</div><div class="roster-list" id="roster-loginovy"></div></div>
+    </div>
+  </div>
+
+  <!-- BOTTOM BUTTONS -->
+
+  <div class="bottom-btns">
+    <a href="anketa.html" class="btn-primary">🏆 Хочу в одну из этих команд!</a>
+    <a href="index.html" class="btn-secondary">‹ Назад к конкурсам</a>
+  </div>
+
+</div>
+
+<script>
+function toggleCard(id) {
+  const card = document.getElementById('card-'+id);
+  const body = document.getElementById('body-'+id);
+  card.classList.toggle('open');
+  body.classList.toggle('open');
+}
+</script>
+
+</body>
+</html>
