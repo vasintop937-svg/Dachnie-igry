@@ -1,0 +1,623 @@
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Анкета — Дачные Игры</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Unbounded:wght@400;600;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+
+<style>
+:root{--gold:#e8b828;--gold-light:#fff0a0;--gold-dark:#a07810;--red-mid:#c02808;--green:#2a6010;--green-light:#90d850;--cream:#f8f0d8;--dark:#060e02;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:radial-gradient(ellipse at 50% 0%,#1e3a08 0%,#0c1804 50%,var(--dark) 100%);min-height:100vh;font-family:'Caveat',cursive;color:var(--cream);overflow-x:hidden;}
+
+/* NAV */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid #1a3008;background:rgba(6,14,2,.92);backdrop-filter:blur(8px);}
+.nav-back{font-family:'Unbounded',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#5a8030;text-decoration:none;display:flex;align-items:center;gap:6px;transition:color .2s;}
+.nav-back:hover{color:var(--gold);}
+.nav-title{font-family:'Playfair Display',serif;font-size:15px;color:var(--gold);}
+
+/* TABS */
+.tabs{display:flex;justify-content:center;gap:4px;padding:16px 16px 0;}
+.tab{font-family:'Unbounded',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:8px 18px;border:1px solid #3a5820;background:transparent;color:#5a8030;cursor:pointer;transition:all .3s;border-radius:2px;}
+.tab.active{background:var(--green);border-color:var(--gold-dark);color:var(--gold-light);}
+
+.container{max-width:560px;margin:0 auto;padding:0 16px 60px;}
+
+/* FORM */
+.form-card{background:linear-gradient(160deg,#162208,#0c1604);border:1px solid #3a5820;border-radius:8px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.5);margin-top:14px;}
+.fc-header{background:linear-gradient(90deg,#1e3a08,#2a5010,#1e3a08);border-bottom:1px solid var(--gold-dark);padding:12px 20px;display:flex;align-items:center;gap:10px;}
+.fc-header .icon{font-size:20px;}
+.fc-header h2{font-family:'Unbounded',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);}
+.section{padding:16px 20px 0;}
+.question{margin-bottom:16px;}
+.question label{font-family:'Caveat',cursive;font-size:18px;color:var(--cream);display:block;margin-bottom:8px;line-height:1.3;}
+.req{color:var(--red-mid);margin-left:2px;}
+.text-input{width:100%;background:rgba(0,0,0,.35);border:1px solid #3a5820;border-radius:4px;padding:10px 14px;color:var(--cream);font-family:'Caveat',cursive;font-size:18px;outline:none;transition:border-color .2s;}
+.text-input:focus{border-color:var(--gold-dark);}
+.text-input::placeholder{color:#4a6030;}
+textarea.text-input{resize:none;height:72px;}
+.options{display:flex;flex-direction:column;gap:7px;}
+.opt{display:flex;align-items:center;gap:12px;padding:10px 14px;background:rgba(0,0,0,.25);border:1px solid #2a4010;border-radius:4px;cursor:pointer;transition:all .2s;user-select:none;}
+.opt:hover{border-color:var(--gold-dark);}
+.opt.selected{border-color:var(--gold);background:rgba(232,184,40,.1);}
+.opt input{display:none;}
+.dot{width:18px;height:18px;border:2px solid #4a6830;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.opt.selected .dot{border-color:var(--gold);background:var(--gold);}
+.opt.selected .dot::after{content:'';width:6px;height:6px;background:var(--dark);border-radius:50%;}
+.opt-text{font-family:'Caveat',cursive;font-size:17px;color:var(--cream);line-height:1.3;}
+.age-opts{display:flex;flex-wrap:wrap;gap:7px;}
+.age-pill{padding:8px 14px;background:rgba(0,0,0,.3);border:1px solid #2a4010;border-radius:20px;cursor:pointer;transition:all .2s;user-select:none;}
+.age-pill input{display:none;}
+.age-pill span{font-family:'Caveat',cursive;font-size:16px;color:#a0c870;}
+.age-pill.selected{border-color:var(--gold);background:rgba(232,184,40,.12);}
+.age-pill.selected span{color:var(--gold-light);}
+.submit-wrap{margin-top:12px;}
+.btn-submit{width:100%;padding:15px;background:linear-gradient(135deg,#3a7010,#2a5808);border:1px solid var(--gold-dark);border-radius:4px;color:var(--gold-light);font-family:'Unbounded',sans-serif;font-size:11px;letter-spacing:4px;text-transform:uppercase;cursor:pointer;transition:all .3s;box-shadow:0 4px 20px rgba(0,0,0,.4);}
+.btn-submit:hover{background:linear-gradient(135deg,#4a8818,#386010);}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed;}
+.err{font-family:'Unbounded',sans-serif;font-size:8px;letter-spacing:2px;color:#ff6040;text-transform:uppercase;margin-top:7px;padding:7px 12px;background:rgba(200,40,0,.1);border-left:2px solid var(--red-mid);border-radius:2px;display:none;}
+.err.show{display:block;}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(232,184,40,.3);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* SUCCESS */
+.success-card{background:linear-gradient(160deg,#162208,#0c1604);border:1px solid var(--gold-dark);border-radius:8px;padding:32px 20px;text-align:center;display:none;margin-top:14px;}
+.success-card.show{display:block;}
+.find-card{background:linear-gradient(160deg,#162208,#0c1604);border:1px solid #3a5820;border-radius:8px;overflow:hidden;margin-top:14px;display:none;}
+.find-card.show{display:block;}
+
+/* ADMIN */
+.admin-panel{display:none;}
+.admin-panel.active{display:block;}
+.pw-gate{background:linear-gradient(160deg,#162208,#0c1604);border:1px solid #3a5820;border-radius:8px;padding:28px 20px;text-align:center;margin-top:14px;}
+.pw-gate h2{font-family:'Playfair Display',serif;font-size:19px;color:var(--gold);margin-bottom:5px;}
+.pw-gate p{font-family:'Caveat',cursive;font-size:16px;color:#6a8850;margin-bottom:16px;}
+.pw-row{display:flex;gap:8px;}
+.pw-in{flex:1;background:rgba(0,0,0,.4);border:1px solid #3a5820;border-radius:4px;padding:11px 14px;color:var(--cream);font-family:'Caveat',cursive;font-size:18px;outline:none;}
+.pw-in:focus{border-color:var(--gold-dark);}
+.pw-btn{padding:11px 18px;background:var(--green);border:1px solid var(--gold-dark);border-radius:4px;color:var(--gold-light);font-family:'Unbounded',sans-serif;font-size:9px;letter-spacing:2px;cursor:pointer;}
+.admin-content{display:none;}
+.admin-content.unlocked{display:block;}
+.admin-hdr{background:linear-gradient(160deg,#162208,#0c1604);border:1px solid #3a5820;border-radius:8px;padding:14px 16px;margin-top:14px;margin-bottom:12px;}
+.admin-hdr h2{font-family:'Unbounded',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
+.balance-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.t-stat{padding:9px 12px;border-radius:5px;border:1px solid;}
+.t-stat .tn{font-family:'Unbounded',sans-serif;font-size:7px;letter-spacing:2px;text-transform:uppercase;margin-bottom:3px;}
+.t-stat .tc{font-family:'Playfair Display',serif;font-size:20px;}
+.t-stat .ta{font-family:'Caveat',cursive;font-size:13px;opacity:.7;margin-top:1px;}
+.ts-v{background:rgba(60,100,200,.1);border-color:#3060c0;color:#80b8ff;}
+.ts-m{background:rgba(40,140,200,.1);border-color:#2880c0;color:#80e8ff;}
+.ts-t{background:rgba(200,100,0,.1);border-color:#c06000;color:#ffb040;}
+.ts-l{background:rgba(40,140,60,.1);border-color:#2a8030;color:#90e880;}
+.ts-w{background:rgba(100,100,100,.1);border-color:#505050;color:#b0b0b0;}
+.admin-acts{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.btn-sm{font-family:'Unbounded',sans-serif;font-size:8px;letter-spacing:2px;text-transform:uppercase;padding:8px 13px;border-radius:3px;border:1px solid;cursor:pointer;background:transparent;}
+.btn-ann{color:#a0ff80;border-color:#3a8030;}
+.btn-exp{color:var(--gold);border-color:var(--gold-dark);}
+.p-list{display:flex;flex-direction:column;gap:8px;}
+.p-card{background:linear-gradient(160deg,#162208,#0c1604);border:1px solid #2a4010;border-radius:6px;overflow:hidden;}
+.p-head{padding:10px 14px;background:rgba(0,0,0,.2);display:flex;justify-content:space-between;align-items:center;gap:8px;cursor:pointer;}
+.p-name-text{font-family:'Playfair Display',serif;font-size:16px;color:var(--gold-light);}
+.badges{display:flex;gap:4px;flex-wrap:wrap;}
+.bdg{font-family:'Unbounded',sans-serif;font-size:7px;letter-spacing:1px;padding:2px 6px;border-radius:8px;border:1px solid;}
+.p-body{padding:11px 14px;display:none;border-top:1px solid #1a3008;}
+.p-body.open{display:block;}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.ii label{font-family:'Unbounded',sans-serif;font-size:7px;letter-spacing:2px;text-transform:uppercase;color:#5a8030;display:block;margin-bottom:2px;}
+.ii span{font-family:'Caveat',cursive;font-size:15px;color:var(--cream);}
+.ii.full{grid-column:1/-1;}
+.bcry{margin-top:8px;padding:8px 11px;background:rgba(232,184,40,.04);border-left:2px solid var(--gold-dark);font-family:'Caveat',cursive;font-size:15px;color:#c0e090;font-style:italic;}
+.t-sel{margin-top:10px;display:flex;align-items:center;gap:8px;}
+.t-sel label{font-family:'Unbounded',sans-serif;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#5a8030;flex-shrink:0;}
+.t-sel select{flex:1;background:rgba(0,0,0,.4);border:1px solid #3a5820;border-radius:4px;padding:6px 10px;color:var(--cream);font-family:'Caveat',cursive;font-size:15px;outline:none;cursor:pointer;}
+.empty-st{text-align:center;padding:36px 20px;color:#3a5820;}
+.empty-st .ei{font-size:40px;opacity:.4;}
+.empty-st p{font-family:'Caveat',cursive;font-size:17px;margin-top:8px;}
+</style>
+
+</head>
+<body>
+
+<!-- NAV -->
+
+<nav class="nav">
+  <a href="index.html" class="nav-back">‹ На главную</a>
+  <span class="nav-title" id="navTitle" onclick="adminTap()">Анкета</span>
+  <span></span>
+</nav>
+
+<!-- TABS -->
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('form')" id="tab-btn-form">📝 Анкета</button>
+  <button class="tab" onclick="showTab('admin')" id="tab-btn-admin" style="display:none">📊 Организатор</button>
+</div>
+
+<div class="container">
+
+<!-- ══ FORM ══ -->
+
+<div id="tab-form">
+  <div id="formWrap">
+    <div class="form-card">
+      <div class="fc-header"><span class="icon">👤</span><h2>Блок 1 — О себе</h2></div>
+      <div class="section">
+        <div class="question">
+          <label>Имя и фамилия <span class="req">*</span></label>
+          <input type="text" id="q_name" class="text-input" placeholder="Иван Васин" maxlength="60"/>
+          <div class="err" id="err_name">Введи своё имя</div>
+        </div>
+        <div class="question">
+          <label>Сколько тебе лет? <span class="req">*</span></label>
+          <div class="age-opts">
+            <label class="age-pill"><input type="radio" name="age" value="до 12"><span>🐣 до 12</span></label>
+            <label class="age-pill"><input type="radio" name="age" value="13–17"><span>⚡ 13–17</span></label>
+            <label class="age-pill"><input type="radio" name="age" value="18–35"><span>💪 18–35</span></label>
+            <label class="age-pill"><input type="radio" name="age" value="36–55"><span>🎩 36–55</span></label>
+            <label class="age-pill"><input type="radio" name="age" value="55+"><span>🏆 55+</span></label>
+          </div>
+          <div class="err" id="err_age">Выбери возраст</div>
+        </div>
+      </div>
+
+```
+  <div class="fc-header" style="margin-top:4px;"><span class="icon">💪</span><h2>Блок 2 — Физическая форма</h2></div>
+  <div class="section">
+    <div class="question">
+      <label>Оцени себя честно 😄 <span class="req">*</span></label>
+      <div class="options">
+        <label class="opt"><input type="radio" name="fitness" value="Диван зовёт 🛋️"><div class="dot"></div><span class="opt-text">🛋️ Диван зовёт — главное не торопиться</span></label>
+        <label class="opt"><input type="radio" name="fitness" value="Держусь 🦊"><div class="dot"></div><span class="opt-text">🦊 Держусь — не чемпион, но не подведу</span></label>
+        <label class="opt"><input type="radio" name="fitness" value="В форме 🏃"><div class="dot"></div><span class="opt-text">🏃 В форме — готов к любым испытаниям</span></label>
+        <label class="opt"><input type="radio" name="fitness" value="Спортсмен ⚡"><div class="dot"></div><span class="opt-text">⚡ Спортсмен — вам всем не повезло</span></label>
+      </div>
+      <div class="err" id="err_fitness">Выбери вариант</div>
+    </div>
+    <div class="question">
+      <label>Есть что-то важное по здоровью? <span style="color:#4a6830;font-size:15px;">(необязательно)</span></label>
+      <textarea id="q_health" class="text-input" placeholder="Например: берегу колено, не бегаю…"></textarea>
+    </div>
+  </div>
+
+  <div class="fc-header" style="margin-top:4px;"><span class="icon">🎭</span><h2>Блок 3 — Характер бойца</h2></div>
+  <div class="section">
+    <div class="question">
+      <label>Как ты играешь в игры? <span class="req">*</span></label>
+      <div class="options">
+        <label class="opt"><input type="radio" name="style" value="Побеждаю или умру"><div class="dot"></div><span class="opt-text">🔥 Побеждаю или умру — иначе зачем</span></label>
+        <label class="opt"><input type="radio" name="style" value="Главное повеселиться"><div class="dot"></div><span class="opt-text">😄 Главное повеселиться и не покалечиться</span></label>
+        <label class="opt"><input type="radio" name="style" value="Смотрю по ситуации"><div class="dot"></div><span class="opt-text">🦊 Смотрю по ситуации — гибкий стратег</span></label>
+        <label class="opt"><input type="radio" name="style" value="Мешаю другим победить"><div class="dot"></div><span class="opt-text">😈 Моя цель — мешать другим победить</span></label>
+      </div>
+      <div class="err" id="err_style">Выбери вариант</div>
+    </div>
+    <div class="question">
+      <label>Твоя суперсила в команде? <span class="req">*</span></label>
+      <div class="options">
+        <label class="opt"><input type="radio" name="power" value="Стратег 🧠"><div class="dot"></div><span class="opt-text">🧠 Стратег — план на каждый случай</span></label>
+        <label class="opt"><input type="radio" name="power" value="Силач 🐻"><div class="dot"></div><span class="opt-text">🐻 Силач — таскаю, толкаю, поднимаю</span></label>
+        <label class="opt"><input type="radio" name="power" value="Хитрец 😏"><div class="dot"></div><span class="opt-text">😏 Хитрец — найду лазейку в любых правилах</span></label>
+        <label class="opt"><input type="radio" name="power" value="Моральная поддержка 📣"><div class="dot"></div><span class="opt-text">📣 Моральная поддержка — громкий болельщик</span></label>
+      </div>
+      <div class="err" id="err_power">Выбери вариант</div>
+    </div>
+  </div>
+
+  <div class="fc-header" style="margin-top:4px;"><span class="icon">🌻</span><h2>Блок 4 — Дачная душа</h2></div>
+  <div class="section">
+    <div class="question">
+      <label>Кто ты на даче? <span class="req">*</span></label>
+      <div class="options">
+        <label class="opt"><input type="radio" name="dacha" value="Шашлычник 🍖"><div class="dot"></div><span class="opt-text">🍖 Шашлычник — у мангала мой трон</span></label>
+        <label class="opt"><input type="radio" name="dacha" value="Садовод 🌱"><div class="dot"></div><span class="opt-text">🌱 Садовод — знаю каждый куст</span></label>
+        <label class="opt"><input type="radio" name="dacha" value="Диванный эксперт 🧐"><div class="dot"></div><span class="opt-text">🧐 Диванный эксперт — советую бесплатно</span></label>
+        <label class="opt"><input type="radio" name="dacha" value="Главный едок 🍽️"><div class="dot"></div><span class="opt-text">🍽️ Главный едок — оцениваю качество еды</span></label>
+        <label class="opt"><input type="radio" name="dacha" value="Прораб 🔨"><div class="dot"></div><span class="opt-text">🔨 Прораб — всё починю и улучшу</span></label>
+      </div>
+      <div class="err" id="err_dacha">Выбери вариант</div>
+    </div>
+    <div class="question">
+      <label>Боевой клич или угроза соперникам 😄</label>
+      <textarea id="q_cry" class="text-input" placeholder="Мы вас всех победим!" style="height:66px;"></textarea>
+    </div>
+  </div>
+
+  <div class="fc-header" style="margin-top:4px;"><span class="icon">🏁</span><h2>Блок 5 — Участие</h2></div>
+  <div class="section">
+    <div class="question">
+      <label>Ты точно придёшь на Дачные Игры? <span class="req">*</span></label>
+      <div class="options">
+        <label class="opt"><input type="radio" name="attend" value="Да, буду точно"><div class="dot"></div><span class="opt-text">✅ Да — буду точно, уже готовлюсь</span></label>
+        <label class="opt"><input type="radio" name="attend" value="Скорее всего да"><div class="dot"></div><span class="opt-text">🤞 Скорее всего да — если ничего не помешает</span></label>
+        <label class="opt"><input type="radio" name="attend" value="Не уверен"><div class="dot"></div><span class="opt-text">🤔 Не уверен — пока сложно сказать</span></label>
+        <label class="opt"><input type="radio" name="attend" value="Буду, но только смотреть"><div class="dot"></div><span class="opt-text">👀 Буду, но только смотреть и болеть</span></label>
+      </div>
+      <div class="err" id="err_attend">Выбери вариант</div>
+    </div>
+  </div>
+</div>
+
+<div class="submit-wrap">
+  <button class="btn-submit" id="submitBtn" onclick="submitForm()">🔮 Узнать свою команду</button>
+  <div class="err" id="err_global" style="margin-top:8px;">Заполни все обязательные поля</div>
+</div>
+```
+
+  </div>
+
+  <!-- SUCCESS -->
+
+  <div class="success-card" id="successCard">
+    <div id="teamReveal"></div>
+    <button class="btn-submit" style="margin-top:22px;" onclick="fillAnother()">Записать ещё одного участника</button>
+  </div>
+
+  <!-- FIND MY TEAM -->
+
+  <div class="find-card" id="findCard">
+    <div class="fc-header"><span class="icon">🔍</span><h2>Узнать свою команду</h2></div>
+    <div class="section">
+      <div class="question">
+        <label>Введи имя как в анкете</label>
+        <input type="text" id="findName" class="text-input" placeholder="Иван Васин" maxlength="60"/>
+      </div>
+    </div>
+    <div style="padding:0 20px 18px;">
+      <button class="btn-submit" onclick="findMyTeam()">Найти</button>
+      <div class="err" id="err_find" style="margin-top:8px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADMIN ══ -->
+
+<div id="tab-admin" class="admin-panel">
+  <div class="pw-gate" id="pwGate">
+    <h2>🔐 Панель организатора</h2>
+    <p>Введи пароль для доступа</p>
+    <div class="pw-row">
+      <input type="password" id="pwInput" class="pw-in" placeholder="Пароль…" onkeydown="if(event.key==='Enter')checkPw()"/>
+      <button class="pw-btn" onclick="checkPw()">Войти</button>
+    </div>
+    <div class="err" id="err_pw" style="margin-top:10px;">Неверный пароль</div>
+  </div>
+  <div class="admin-content" id="adminContent">
+    <div class="admin-hdr">
+      <h2>📊 Участники и баланс</h2>
+      <div class="balance-grid" id="balanceGrid"></div>
+    </div>
+    <div class="admin-acts">
+      <button class="btn-sm btn-ann" onclick="doAnnounce()">📣 Объявить команды</button>
+      <button class="btn-sm btn-exp" onclick="exportCSV()">⬇ CSV</button>
+    </div>
+    <div class="p-list" id="pList"></div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, onSnapshot, query, orderBy }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBqhrRdHleFnw4XHj0TP1vzbKFFaBTSwbg",
+    authDomain: "anketa-d2b2f.firebaseapp.com",
+    projectId: "anketa-d2b2f",
+    storageBucket: "anketa-d2b2f.firebasestorage.app",
+    messagingSenderId: "756151791921",
+    appId: "1:756151791921:web:320609a1ca6dc6d7210010"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db  = getFirestore(app);
+  const COL = "participants";
+
+  const AGE_GROUP = {'до 12':0,'13–17':1,'18–35':2,'36–55':3,'55+':4};
+
+  // Болельщики — не распределяем в команды
+  const WATCHERS = ['Не уверен','Буду, но только смотреть'];
+
+  async function pickTeam(answers) {
+    // Если не участвует — болельщик
+    if (WATCHERS.includes(answers.attend)) return 'Болельщики 👀';
+
+    const snap = await getDocs(collection(db, COL));
+    const counts   = {'Василиски и Васильки':0,'Мороз и Ко':0,'Томлёные под солнцем':0,'Логины Чемпионов':0};
+    const ageGroups = {};
+    Object.keys(counts).forEach(t => { ageGroups[t] = [0,0,0,0,0]; });
+
+    snap.forEach(d => {
+      const p = d.data();
+      if (p.team && counts[p.team] !== undefined) {
+        counts[p.team]++;
+        const ag = AGE_GROUP[p.age] ?? 2;
+        ageGroups[p.team][ag]++;
+      }
+    });
+
+    const participantAge = AGE_GROUP[answers.age] ?? 2;
+    const maxCount = Math.max(...Object.values(counts));
+    const scores = {};
+    Object.keys(counts).forEach(team => {
+      const countScore = (maxCount - counts[team]) * 10;
+      const ageScore   = (Math.max(...ageGroups[team]) - ageGroups[team][participantAge]) * 3;
+      const charScore  = characterScore(team, answers);
+      scores[team] = countScore + ageScore + charScore;
+    });
+
+    const max = Math.max(...Object.values(scores));
+    const winners = Object.keys(scores).filter(t => scores[t] === max);
+    return winners[Math.floor(Math.random() * winners.length)];
+  }
+
+  function characterScore(team, p) {
+    let s = 0;
+    const styleMap = {'Мешаю другим победить':'Василиски и Васильки','Побеждаю или умру':'Мороз и Ко','Главное повеселиться':'Томлёные под солнцем','Смотрю по ситуации':'Логины Чемпионов'};
+    const powerMap = {'Хитрец 😏':'Василиски и Васильки','Силач 🐻':'Мороз и Ко','Моральная поддержка 📣':'Томлёные под солнцем','Стратег 🧠':'Логины Чемпионов'};
+    if (styleMap[p.style] === team) s += 2;
+    if (powerMap[p.power] === team) s += 2;
+    return s;
+  }
+
+  async function submitToFirebase(answers) {
+    const team = await pickTeam(answers);
+    const ref  = await addDoc(collection(db, COL), {
+      ...answers, team, announced: false,
+      ts: new Date().toISOString(),
+      tsDisplay: new Date().toLocaleString('ru')
+    });
+    return { id: ref.id, team };
+  };
+
+  function listenParticipants(callback) {
+    const q = query(collection(db, COL), orderBy("ts","asc"));
+    return onSnapshot(q, snap => {
+      const list = [];
+      snap.forEach(d => list.push({ id: d.id, ...d.data() }));
+      callback(list);
+    });
+  };
+
+  async function updateTeam(id, team) {
+    await updateDoc(doc(db, COL, id), { team });
+  };
+
+  async function announceAll() {
+    const snap = await getDocs(collection(db, COL));
+    await Promise.all([...snap.docs].map(d => updateDoc(doc(db, COL, d.id), { announced: true })));
+  };
+
+  async function checkAnnounced() {
+    const snap = await getDocs(collection(db, COL));
+    return snap.docs.some(d => d.data().announced);
+  };
+
+  async function findParticipant(name) {
+    const snap = await getDocs(collection(db, COL));
+    const nl = name.toLowerCase().trim();
+    let found = null;
+    snap.forEach(d => { const p = d.data(); if(p.name?.toLowerCase().trim()===nl) found=p; });
+    return found;
+  };
+
+
+const ADMIN_PW = 'дача2026';
+
+// TABS
+function showTab(tab){
+  document.getElementById('tab-form').style.display  = tab==='form'  ? '' : 'none';
+  const adm = document.getElementById('tab-admin');
+  adm.style.display = tab==='admin' ? 'block' : 'none';
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-btn-'+tab).classList.add('active');
+}
+document.getElementById('tab-admin').style.display='none';
+
+// SECRET URL
+(function(){
+  const p = new URLSearchParams(window.location.search);
+  if(p.get('admin')==='yes'){
+    document.getElementById('tab-btn-admin').style.display='';
+    showTab('admin');
+  }
+})();
+
+// RADIO UI
+document.querySelectorAll('.opt').forEach(l=>{
+  l.addEventListener('click',()=>{
+    const n=l.querySelector('input').name;
+    document.querySelectorAll(`.opt input[name="${n}"]`).forEach(i=>i.closest('.opt').classList.remove('selected'));
+    l.classList.add('selected'); l.querySelector('input').checked=true;
+  });
+});
+document.querySelectorAll('.age-pill').forEach(p=>{
+  p.addEventListener('click',()=>{
+    document.querySelectorAll('.age-pill').forEach(x=>x.classList.remove('selected'));
+    p.classList.add('selected'); p.querySelector('input').checked=true;
+  });
+});
+
+function gv(id){return document.getElementById(id)?.value.trim()||'';}
+function gr(name){const e=document.querySelector(`input[name="${name}"]:checked`);return e?e.value:'';}
+function se(id,show){const e=document.getElementById(id);if(e)e.classList.toggle('show',show);}
+
+// TEAM DATA
+const TEAM_DATA={
+  'Василиски и Васильки':{emoji:'🔵',color:'#80b8ff',bg:'rgba(60,100,200,.15)',border:'#3060c0',image:'images/gerb_vasiny.PNG',desc:'Непредсказуемые, остроумные, всегда с сюрпризом в рукаве.',motto:'«Где мы — там смех и удивленье»'},
+  'Мороз и Ко':{emoji:'❄',color:'#80e8ff',bg:'rgba(40,140,200,.15)',border:'#2880c0',image:'images/gerb_moroz.PNG',desc:'Пробивные и упорные. Не остановить, не сломить.',motto:'«Закалены — непоколебимы»'},
+  'Томлёные под солнцем':{emoji:'☀',color:'#ffb040',bg:'rgba(200,100,0,.15)',border:'#c06000',image:'images/gerb_tomily.PNG',desc:'Азартные и страстные. Горят — и побеждают.',motto:'«Горим — и побеждаем»'},
+  'Логины Чемпионов':{emoji:'🌿',color:'#90e880',bg:'rgba(40,140,60,.15)',border:'#2a8030',image:'images/gerb_loginovy.PNG',desc:'Умные и трудолюбивые. Найдут путь там, где другие сдадутся.',motto:'«Умом и трудом — к вершине»'},
+  'Болельщики 👀':{emoji:'👀',color:'#b0b0b0',bg:'rgba(100,100,100,.12)',border:'#505050',image:'',desc:'Болеют за всех, мешают никому.',motto:'«Главное — атмосфера!»'},
+};
+
+function renderReveal(team, firstName) {
+  const t = TEAM_DATA[team] || {emoji:'⚔',color:var('--gold'),bg:'rgba(200,150,0,.1)',border:'#a07010',desc:'',motto:''};
+  const isWatcher = team === 'Болельщики 👀';
+  document.getElementById('teamReveal').innerHTML = `
+    <div style="font-size:68px;line-height:1;filter:drop-shadow(0 0 20px ${t.color});margin-bottom:10px;">${t.emoji}</div>
+    <p style="font-family:'Unbounded',sans-serif;font-size:9px;letter-spacing:4px;color:#5a8030;text-transform:uppercase;margin-bottom:6px;">${isWatcher ? 'Твоя роль' : 'Твоя команда'}</p>
+    ${t.image ? `<img src="${t.image}" style="width:110px;height:110px;object-fit:contain;margin:0 auto 12px;display:block;" onerror="this.style.display='none'"/>` : ''}
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(18px,5vw,24px);color:${t.color};text-shadow:0 0 20px ${t.color}55;margin-bottom:8px;">${team}</h2>
+    <p style="font-family:'Playfair Display',serif;font-size:15px;color:#a0c870;line-height:1.6;margin-bottom:6px;">${t.desc}</p>
+    <div style="margin:10px 0;padding:10px 14px;background:${t.bg};border:1px solid ${t.border};border-radius:4px;font-family:'Caveat',cursive;font-size:17px;color:${t.color};">${t.motto}</div>
+    <p style="font-family:'Caveat',cursive;font-size:15px;color:#5a8030;margin-top:8px;">${isWatcher ? `Спасибо, ${firstName}! Ждём тебя болеть 🏡` : `Анкета сохранена, ${firstName}! Ждём тебя на Дачных Играх 🏡`}</p>
+  `;
+}
+
+async function submitForm() {
+  let ok = true;
+  const name=gv('q_name'),age=gr('age'),fitness=gr('fitness'),style=gr('style'),power=gr('power'),dacha=gr('dacha'),attend=gr('attend'),health=gv('q_health'),cry=gv('q_cry');
+  se('err_name',!name);   if(!name)   ok=false;
+  se('err_age',!age);     if(!age)    ok=false;
+  se('err_fitness',!fitness);if(!fitness)ok=false;
+  se('err_style',!style); if(!style)  ok=false;
+  se('err_power',!power); if(!power)  ok=false;
+  se('err_dacha',!dacha); if(!dacha)  ok=false;
+  se('err_attend',!attend);if(!attend)ok=false;
+  se('err_global',!ok);
+  if(!ok) return;
+
+  const btn=document.getElementById('submitBtn');
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span>Определяем команду…';
+
+  try {
+    const {team}=await submitToFirebase({name,age,fitness,style,power,dacha,attend,health,cry});
+    renderReveal(team, name.split(' ')[0]);
+    document.getElementById('formWrap').style.display='none';
+    document.getElementById('successCard').classList.add('show');
+    window.scrollTo({top:0,behavior:'smooth'});
+  } catch(e) {
+    btn.disabled=false; btn.innerHTML='🔮 Узнать свою команду';
+    const eg=document.getElementById('err_global');
+    eg.textContent='Ошибка соединения — проверь интернет'; eg.classList.add('show');
+  }
+}
+
+function fillAnother() {
+  document.getElementById('formWrap').style.display='';
+  document.getElementById('successCard').classList.remove('show');
+  const sb=document.getElementById('submitBtn');
+  sb.disabled=false; sb.innerHTML='🔮 Узнать свою команду';
+  ['q_name','q_health','q_cry'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  document.querySelectorAll('.opt').forEach(l=>l.classList.remove('selected'));
+  document.querySelectorAll('.age-pill').forEach(p=>p.classList.remove('selected'));
+  document.querySelectorAll('input[type=radio]').forEach(r=>r.checked=false);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// FIND MY TEAM
+async function findMyTeam() {
+  const name=document.getElementById('findName').value.trim();
+  const errEl=document.getElementById('err_find');
+  errEl.classList.remove('show');
+  if(!name){errEl.textContent='Введи имя';errEl.classList.add('show');return;}
+  try {
+    const p=await findParticipant(name);
+    if(!p){errEl.textContent='Анкета не найдена — проверь имя';errEl.classList.add('show');return;}
+    if(!p.announced){errEl.textContent='Команды ещё не объявлены — следи за новостями!';errEl.classList.add('show');return;}
+    renderReveal(p.team, p.name.split(' ')[0]);
+    document.getElementById('findCard').style.display='none';
+    document.getElementById('successCard').classList.add('show');
+    window.scrollTo({top:0,behavior:'smooth'});
+  } catch(e){errEl.textContent='Ошибка соединения';errEl.classList.add('show');}
+}
+
+// ON LOAD — show find form if announced
+(async function(){
+  try{const a=await checkAnnounced();if(a)document.getElementById('findCard').classList.add('show');}catch(e){}
+})();
+
+// ADMIN
+function checkPw(){
+  const v=document.getElementById('pwInput').value.trim();
+  const e=document.getElementById('err_pw');
+  if(v===ADMIN_PW){document.getElementById('pwGate').style.display='none';document.getElementById('adminContent').classList.add('unlocked');startAdmin();e.classList.remove('show');}
+  else{e.classList.add('show');}
+}
+
+const TEAMS=['Василиски и Васильки','Мороз и Ко','Томлёные под солнцем','Логины Чемпионов','Болельщики 👀'];
+const AGE_LABELS=['до 12','13–17','18–35','36–55','55+'];
+const TS=[{cls:'ts-v',e:'🔵'},{cls:'ts-m',e:'❄'},{cls:'ts-t',e:'☀'},{cls:'ts-l',e:'🌿'},{cls:'ts-w',e:'👀'}];
+let unsub=null;
+
+function startAdmin(){if(unsub)return;unsub=listenParticipants(renderAdmin);}
+
+function renderAdmin(list){
+  // Balance
+  const bg=document.getElementById('balanceGrid');
+  bg.innerHTML=TEAMS.map((team,i)=>{
+    const m=list.filter(p=>p.team===team);
+    const ages=AGE_LABELS.map((l,ai)=>{const c=m.filter(p=>p.age===l).length;return c?`${l}:${c}`:null;}).filter(Boolean).join(' · ')||'—';
+    return `<div class="t-stat ${TS[i].cls}"><div class="tn">${TS[i].e} ${team}</div><div class="tc">${m.length} <span style="font-size:12px;opacity:.6;">чел.</span></div><div class="ta">${ages}</div></div>`;
+  }).join('');
+
+  // List
+  const pl=document.getElementById('pList');
+  if(!list.length){pl.innerHTML='<div class="empty-st"><div class="ei">📭</div><p>Анкеты пока не заполнены</p></div>';return;}
+  const AGE_BC={'до 12':'color:#80e0ff;border-color:#40a0c0','13–17':'color:#a0ff80;border-color:#50a030','18–35':'color:var(--gold);border-color:var(--gold-dark)','36–55':'color:#ffa060;border-color:#c06020','55+':'color:#ff8080;border-color:#c03030'};
+  const ATT_BC={'Да, буду точно':'color:#80ff80;border-color:#308030','Скорее всего да':'color:#ffe080;border-color:#908030','Не уверен':'color:#ff8080;border-color:#803030','Буду, но только смотреть':'color:#a0c0ff;border-color:#3060a0'};
+  pl.innerHTML=list.map(p=>{
+    const tc=TEAM_DATA[p.team]?.color||'#888';
+    return `<div class="p-card">
+      <div class="p-head" onclick="toggleP('${p.id}')">
+        <span class="p-name-text">${p.name}</span>
+        <div class="badges">
+          <span class="bdg" style="${AGE_BC[p.age]||''}">${p.age}</span>
+          <span class="bdg" style="${ATT_BC[p.attend]||''}">${p.attend?.split(',')[0]||'?'}</span>
+          ${p.team?`<span class="bdg" style="color:${tc};border-color:${tc}55;">${p.team.split(' ')[0]}</span>`:''}
+        </div>
+      </div>
+      <div class="p-body" id="pb_${p.id}">
+        <div class="info-grid">
+          <div class="ii"><label>Физформа</label><span>${p.fitness||'—'}</span></div>
+          <div class="ii"><label>Стиль</label><span>${p.style||'—'}</span></div>
+          <div class="ii"><label>Суперсила</label><span>${p.power||'—'}</span></div>
+          <div class="ii"><label>Роль на даче</label><span>${p.dacha||'—'}</span></div>
+          <div class="ii"><label>🏁 Участие</label><span>${p.attend||'—'}</span></div>
+          <div class="ii"><label>📅 Дата</label><span>${p.tsDisplay||'—'}</span></div>
+          ${p.health?`<div class="ii full"><label>⚠ Здоровье</label><span>${p.health}</span></div>`:''}
+          ${p.cry?`<div class="ii full"><div class="bcry">«${p.cry}»</div></div>`:''}
+        </div>
+        <div class="t-sel">
+          <label>Команда</label>
+          <select onchange="changeTeam('${p.id}',this.value)">
+            ${['',...TEAMS].map(t=>`<option value="${t}" ${p.team===t?'selected':''}>${t||'— не назначена —'}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleP(id){document.getElementById('pb_'+id)?.classList.toggle('open');}
+async function changeTeam(id,team){try{await updateTeam(id,team);}catch(e){alert('Ошибка: '+e.message);}}
+async function doAnnounce(){if(!confirm('Объявить команды всем участникам?'))return;try{await announceAll();alert('✅ Команды объявлены!');}catch(e){alert('Ошибка: '+e.message);}}
+
+async function exportCSV(){
+  listenParticipants(list=>{
+    const h=['Имя','Возраст','Физформа','Стиль','Суперсила','Дача','Участие','Здоровье','Клич','Команда','Дата'];
+    const rows=list.map(p=>[p.name,p.age,p.fitness,p.style,p.power,p.dacha,p.attend||'—',p.health||'—',p.cry||'—',p.team||'—',p.tsDisplay||'—'].map(v=>`"${String(v).replace(/"/g,'""')}"`));
+    const csv=[h.join(','),...rows.map(r=>r.join(','))].join('\n');
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv'}));a.download='dachnye_igry.csv';a.click();
+  });
+}
+
+
+// TRIPLE TAP SECRET
+let tapCount = 0, tapTimer = null;
+function adminTap() {
+  tapCount++;
+  if (tapTimer) clearTimeout(tapTimer);
+  tapTimer = setTimeout(() => { tapCount = 0; }, 800);
+  if (tapCount >= 3) {
+    tapCount = 0;
+    document.getElementById('tab-btn-admin').style.display = '';
+    showTab('admin');
+  }
+}
+</script>
+
+</body>
+</html>
