@@ -1,0 +1,144 @@
+
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Президент и Председатель — Дачные Игры</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Unbounded:wght@400;600;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#e8b828;--gold-light:#fff0a0;--gold-dark:#a07810;--green:#2a6010;--green-light:#90d850;--cream:#f8f0d8;--dark:#060e02;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:radial-gradient(ellipse at 50% 0%,#1e3a08 0%,#0c1804 50%,#060e02 100%);min-height:100vh;font-family:'Caveat',cursive;color:var(--cream);overflow-x:hidden;}
+
+/* NAV */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid #1a3008;background:rgba(6,14,2,.92);backdrop-filter:blur(8px);position:sticky;top:0;z-index:100;}
+.nav-back{font-family:‘Unbounded’,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#5a8030;text-decoration:none;transition:color .2s;}
+.nav-back:hover{color:var(–gold);}
+.nav-title{font-family:‘Playfair Display’,serif;font-size:15px;color:var(–gold);}
+
+/* CONTAINER */
+.container{max-width:560px;margin:0 auto;padding:0 16px 60px;}
+
+/* PAGE HEADER */
+.page-header{text-align:center;padding:32px 0 20px;}
+.page-header h1{font-family:‘Playfair Display’,serif;font-size:clamp(22px,6vw,34px);color:var(–gold);text-shadow:0 0 30px rgba(232,184,40,.35);letter-spacing:2px;margin-bottom:6px;line-height:1.2;}
+.page-header p{font-family:‘Unbounded’,sans-serif;font-size:8px;letter-spacing:5px;text-transform:uppercase;color:#4a7828;}
+.gold-line{width:180px;height:1px;background:linear-gradient(90deg,transparent,var(–gold),transparent);margin:14px auto;}
+
+/* STORY BLOCK */
+.story-block{background:linear-gradient(160deg,#162208,#0c1604);border:1px solid var(–gold-dark);border-radius:10px;padding:22px 18px;margin-bottom:24px;}
+.story-text{font-family:‘Playfair Display’,serif;font-size:16px;color:#b0d888;line-height:1.8;text-align:center;}
+.story-text b{color:var(–gold-light);}
+
+/* PORTRAIT CARDS */
+.portraits{display:flex;flex-direction:column;gap:16px;margin-bottom:24px;}
+.portrait-card{background:linear-gradient(160deg,#162208,#0c1604);border:1px solid var(–gold-dark);border-radius:10px;overflow:hidden;}
+.portrait-photo{width:100%;max-height:400px;object-fit:contain;object-position:center top;display:block;background:#0c1604;}
+.portrait-photo-placeholder{width:100%;height:260px;background:linear-gradient(160deg,#1e3a08,#0c1804);display:flex;align-items:center;justify-content:center;font-size:80px;}
+.portrait-info{padding:18px 16px;}
+.portrait-role{font-family:‘Unbounded’,sans-serif;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(–gold-dark);margin-bottom:6px;}
+.portrait-name{font-family:‘Playfair Display’,serif;font-size:22px;color:var(–gold-light);margin-bottom:14px;line-height:1.3;}
+.interview-btn{display:flex;align-items:center;gap:10px;padding:13px 16px;background:rgba(232,184,40,.06);border:1px solid var(–gold-dark);border-radius:6px;text-decoration:none;transition:all .3s;}
+.interview-btn:hover{background:rgba(232,184,40,.14);border-color:var(–gold);}
+.interview-icon{font-size:24px;flex-shrink:0;}
+.interview-text{flex:1;}
+.interview-label{font-family:‘Unbounded’,sans-serif;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(–gold-dark);margin-bottom:3px;}
+.interview-title{font-family:‘Playfair Display’,serif;font-size:15px;color:var(–gold-light);}
+.interview-arr{color:var(–gold-dark);font-size:18px;flex-shrink:0;}
+
+/* QUOTE */
+.quote-block{background:linear-gradient(160deg,#162208,#0c1604);border-left:3px solid var(–gold-dark);border-radius:0 8px 8px 0;padding:18px 16px;margin-bottom:24px;}
+.quote-text{font-family:‘Playfair Display’,serif;font-style:italic;font-size:18px;color:#a0c870;line-height:1.6;margin-bottom:8px;}
+.quote-author{font-family:‘Unbounded’,sans-serif;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:#4a7028;}
+
+/* BACK BTN */
+.back-btn{display:block;width:100%;padding:14px;background:transparent;border:1px solid #3a5820;border-radius:4px;color:#5a8030;font-family:‘Unbounded’,sans-serif;font-size:9px;letter-spacing:3px;text-transform:uppercase;text-align:center;text-decoration:none;margin-top:8px;transition:all .3s;}
+.back-btn:hover{border-color:var(–gold-dark);color:var(–gold);}
+</style>
+
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-back">‹ На главную</a>
+  <span class="nav-title">Президент и Председатель</span>
+  <span></span>
+</nav>
+
+<div class="container">
+
+  <div class="page-header">
+    <h1>Основатели традиции</h1>
+    <p>Почётные президент и председатель · MMXXVI</p>
+    <div class="gold-line"></div>
+  </div>
+
+  <!-- ИСТОРИЯ -->
+
+  <div class="story-block">
+    <div class="story-text">
+      Всё что вы видите вокруг — эта дача, эти просторы, это место где собирается вся семья — создано их руками и их любовью. <b>Евгений Иванович и Антонина Михайловна Морозовы</b> построили не просто дом. Они построили традицию.<br><br>
+      Именно благодаря им сегодня мы все здесь. Именно их труд, их терпение и их забота о семье позволили этому месту стать тем, чем оно является — домом для всех нас.<br><br>
+      Дачные Игры — это наш способ сказать им спасибо. И кому как не им быть почётными президентом и председателем этого турнира.<br><br>
+      Если хотите узнать больше об их удивительной жизни — они сами расскажут об этом лучше любых слов.
+    </div>
+  </div>
+
+  <!-- ЦИТАТА -->
+
+  <div class="quote-block">
+    <div class="quote-text">«Дом — это не стены. Это люди которые в нём собираются.»</div>
+    <div class="quote-author">Дух Дачных Игр · MMXXVI</div>
+  </div>
+
+  <!-- ПОРТРЕТЫ -->
+
+  <div class="portraits">
+
+```
+<!-- ДЕДУШКА -->
+<div class="portrait-card">
+  <img class="portrait-photo" src="images/dedushka.PNG" alt="Евгений Иванович Морозов"
+       onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+  <div class="portrait-photo-placeholder" style="display:none;">👴</div>
+  <div class="portrait-info">
+    <div class="portrait-role">Почётный президент Дачных Игр</div>
+    <div class="portrait-name">Евгений Иванович Морозов</div>
+    <a href="https://vkvideo.ru/video-230499587_456239017?list=ln-f80atiGoTpdU3z5YJ2&t" target="_blank" class="interview-btn">
+      <div class="interview-icon">🎬</div>
+      <div class="interview-text">
+        <div class="interview-label">Эксклюзивное интервью</div>
+        <div class="interview-title">Смотреть на VK Видео</div>
+      </div>
+      <div class="interview-arr">›</div>
+    </a>
+  </div>
+</div>
+
+<!-- БАБУШКА -->
+<div class="portrait-card">
+  <img class="portrait-photo" src="images/babushka.PNG" alt="Антонина Михайловна Морозова"
+       onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+  <div class="portrait-photo-placeholder" style="display:none;">👵</div>
+  <div class="portrait-info">
+    <div class="portrait-role">Почётный председатель Дачных Игр</div>
+    <div class="portrait-name">Антонина Михайловна Морозова</div>
+    <a href="https://vkvideo.ru/video-230499587_456239018?list=ln-mP1Wsa5hoIBaFXiFW4" target="_blank" class="interview-btn">
+      <div class="interview-icon">🎬</div>
+      <div class="interview-text">
+        <div class="interview-label">Эксклюзивное интервью</div>
+        <div class="interview-title">Смотреть на VK Видео</div>
+      </div>
+      <div class="interview-arr">›</div>
+    </a>
+  </div>
+</div>
+```
+
+  </div>
+
+<a href="index.html" class="back-btn">‹ Назад на главную</a>
+
+</div>
+</body>
+</html>
