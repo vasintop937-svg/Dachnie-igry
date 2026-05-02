@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Голосование — Дачные Игры</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Unbounded:wght@400;600;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<style>
+:root{--gold:#e8b828;--gold-light:#fff0a0;--gold-dark:#a07810;--green:#2a6010;--green-light:#90d850;--cream:#f8f0d8;--dark:#060e02;--red:#c02808;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:radial-gradient(ellipse at 50% 0%,#1e3a08 0%,#0c1804 50%,#060e02 100%);min-height:100vh;font-family:'Caveat',cursive;color:var(--cream);overflow-x:hidden;}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid #1a3008;background:rgba(6,14,2,.92);backdrop-filter:blur(8px);position:sticky;top:0;z-index:50;}
+.nav-back{font-family:'Unbounded',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#5a8030;text-decoration:none;}
+.nav-back:hover{color:var(--gold);}
+.nav-title{font-family:'Playfair Display',serif;font-size:15px;color:var(--gold);}
+.container{max-width:560px;margin:0 auto;padding:0 16px 60px;}
+.page-header{text-align:center;padding:28px 0 16px;}
+.page-header h1{font-family:'Playfair Display',serif;font-size:clamp(22px,6vw,32px);color:var(--gold);text-shadow:0 0 30px rgba(232,184,40,.35);letter-spacing:2px;margin-bottom:6px;}
+.page-header p{font-family:'Unbounded',sans-serif;font-size:8px;letter-spacing:5px;text-transform:uppercase;color:#4a7828;}
+.gold-line{width:180px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:14px auto;}
+
+/* NAME GATE */
+.name-gate{background:linear-gradient(160deg,#162208,#0c1604);border:1px solid #3a5820;border-radius:8px;padding:24px 18px;margin-top:14px;}
+.name-gate h2{font-family:‘Playfair Display’,serif;font-size:20px;color:var(–gold);margin-bottom:6px;}
+.name-gate p{font-family:‘Caveat’,cursive;font-size:16px;color:#6a8850;margin-bottom:16px;line-height:1.4;}
+.text-input{width:100%;background:rgba(0,0,0,.35);border:1px solid #3a5820;border-radius:4px;padding:11px 14px;color:var(–cream);font-family:‘Caveat’,cursive;font-size:18px;outline:none;transition:border-color .2s;}
+.text-input:focus{border-color:var(–gold-dark);}
+.text-input::placeholder{color:#4a6030;}
+.btn-main{width:100%;padding:14px;background:linear-gradient(135deg,#3a7010,#2a5808);border:1px solid var(–gold-dark);border-radius:4px;color:var(–gold-light);font-family:‘Unbounded’,sans-serif;font-size:11px;letter-spacing:4px;text-transform:uppercase;cursor:pointer;transition:all .3s;margin-top:12px;}
+.btn-main:hover{background:linear-gradient(135deg,#4a8818,#386010);}
+.btn-main:disabled{opacity:.5;cursor:not-allowed;}
+.err{font-family:‘Unbounded’,sans-serif;font-size:8px;letter-spacing:2px;color:#ff6040;text-transform:uppercase;margin-top:8px;padding:7px 12px;background:rgba(200,40,0,.1);border-left:2px solid var(–red);border-radius:2px;display:none;}
+.err.show{display:block;}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(232,184,40,.3);border-top-color:var(–gold);border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* VOTE FORM */
+.vote-form{display:none;margin-top:14px;}
+.vote-form.show{display:block;}
+.voter-greeting{background:linear-gradient(160deg,#162208,#0c1604);border:1px solid var(–gold-dark);border-radius:8px;padding:16px 18px;margin-bottom:14px;text-align:center;}
+.voter-greeting p{font-family:‘Playfair Display’,serif;font-size:17px;color:#a0c870;}
+.voter-greeting b{color:var(–gold-light);}
+
+.role-card{background:linear-gradient(160deg,#162208,#0c1604);border:1px solid #3a5820;border-radius:8px;overflow:hidden;margin-bottom:12px;}
+.role-header{background:linear-gradient(90deg,#1e3a08,#2a5010,#1e3a08);border-bottom:1px solid var(–gold-dark);padding:12px 18px;display:flex;align-items:center;gap:10px;}
+.role-icon{font-size:22px;}
+.role-info{flex:1;}
+.role-name{font-family:‘Unbounded’,sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(–gold);}
+.role-desc{font-family:‘Caveat’,cursive;font-size:14px;color:#5a8030;margin-top:2px;}
+.role-body{padding:14px 16px;}
+.candidates{display:flex;flex-direction:column;gap:7px;}
+.candidate{display:flex;align-items:center;gap:12px;padding:10px 14px;background:rgba(0,0,0,.25);border:1px solid #2a4010;border-radius:4px;cursor:pointer;transition:all .2s;user-select:none;}
+.candidate:hover{border-color:var(–gold-dark);}
+.candidate.selected{border-color:var(–gold);background:rgba(232,184,40,.1);}
+.candidate input{display:none;}
+.cdot{width:18px;height:18px;border:2px solid #4a6830;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.candidate.selected .cdot{border-color:var(–gold);background:var(–gold);}
+.candidate.selected .cdot::after{content:’’;width:6px;height:6px;background:var(–dark);border-radius:50%;}
+.cname{font-family:‘Playfair Display’,serif;font-size:17px;color:var(–cream);}
+.cage{font-family:‘Unbounded’,sans-serif;font-size:7px;letter-spacing:1px;color:#4a7020;margin-left:auto;flex-shrink:0;}
+
+.submit-wrap{margin-top:16px;}
+
+/* ALREADY VOTED */
+.already-voted{display:none;margin-top:14px;}
+.already-voted.show{display:block;}
+.voted-card{background:linear-gradient(160deg,#162208,#0c1604);border:1px solid var(–gold-dark);border-radius:8px;padding:28px 20px;text-align:center;}
+.voted-icon{font-size:52px;margin-bottom:10px;}
+.voted-card h2{font-family:‘Playfair Display’,serif;font-size:22px;color:var(–gold);margin-bottom:8px;}
+.voted-card p{font-family:‘Caveat’,cursive;font-size:17px;color:#a0c870;margin-bottom:16px;}
+.btn-results{display:inline-block;padding:12px 28px;background:transparent;border:1px solid var(–gold-dark);border-radius:4px;color:var(–gold);font-family:‘Unbounded’,sans-serif;font-size:9px;letter-spacing:3px;text-transform:uppercase;text-decoration:none;transition:all .3s;}
+.btn-results:hover{background:rgba(232,184,40,.08);}
+</style>
+
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-back">‹ На главную</a>
+  <span class="nav-title">Голосование</span>
+  <span></span>
+</nav>
+
+<div class="container">
+  <div class="page-header">
+    <h1>Выбор ролей</h1>
+    <p>Дачные Игры · Кубок Четырёх Фамилий · MMXXVI</p>
+    <div class="gold-line"></div>
+  </div>
+
+  <!-- NAME GATE -->
+
+  <div class="name-gate" id="nameGate">
+    <h2>Кто ты?</h2>
+    <p>Введи имя как в анкете — мы проверим что ты в списке участников.</p>
+    <input type="text" id="voterName" class="text-input" placeholder="Иван Васин" maxlength="60"/>
+    <div class="err" id="err_name"></div>
+    <button class="btn-main" id="checkNameBtn">Войти в голосование</button>
+  </div>
+
+  <!-- VOTE FORM -->
+
+  <div class="vote-form" id="voteForm">
+    <div class="voter-greeting">
+      <p>Привет, <b id="greetName"></b>! Выбери по одному человеку на каждую роль.</p>
+    </div>
+
+```
+<!-- ФОТОГРАФ -->
+<div class="role-card">
+  <div class="role-header">
+    <span class="role-icon">📸</span>
+    <div class="role-info">
+      <div class="role-name">Фотограф</div>
+      <div class="role-desc">Двое победителей · Снимают всё кроме своей команды</div>
+    </div>
+  </div>
+  <div class="role-body">
+    <div class="candidates" id="cand-photo"></div>
+    <div class="err" id="err_photo">Выбери кандидата</div>
+  </div>
+</div>
+
+<!-- ВИДЕОГРАФ -->
+<div class="role-card">
+  <div class="role-header">
+    <span class="role-icon">🎬</span>
+    <div class="role-info">
+      <div class="role-name">Видеограф</div>
+      <div class="role-desc">Один победитель · Снимает ключевые моменты</div>
+    </div>
+  </div>
+  <div class="role-body">
+    <div class="candidates" id="cand-video"></div>
+    <div class="err" id="err_video">Выбери кандидата</div>
+  </div>
+</div>
+
+<!-- ХРАНИТЕЛЬ СЧЁТА -->
+<div class="role-card">
+  <div class="role-header">
+    <span class="role-icon">📊</span>
+    <div class="role-info">
+      <div class="role-name">Хранитель счёта</div>
+      <div class="role-desc">Один победитель · Фиксирует результаты конкурсов</div>
+    </div>
+  </div>
+  <div class="role-body">
+    <div class="candidates" id="cand-score"></div>
+    <div class="err" id="err_score">Выбери кандидата</div>
+  </div>
+</div>
+
+<!-- КОММЕНТАТОР -->
+<div class="role-card">
+  <div class="role-header">
+    <span class="role-icon">🎤</span>
+    <div class="role-info">
+      <div class="role-name">Комментатор</div>
+      <div class="role-desc">Один победитель · Ведёт конкурсы с микрофоном</div>
+    </div>
+  </div>
+  <div class="role-body">
+    <div class="candidates" id="cand-host"></div>
+    <div class="err" id="err_host">Выбери кандидата</div>
+  </div>
+</div>
+
+<div class="submit-wrap">
+  <button class="btn-main" id="submitVoteBtn">🗳 Отправить голос</button>
+  <div class="err" id="err_global" style="margin-top:8px;">Выбери кандидата в каждой роли</div>
+</div>
+```
+
+  </div>
+
+  <!-- ALREADY VOTED -->
+
+  <div class="already-voted" id="alreadyVoted">
+    <div class="voted-card">
+      <div class="voted-icon">✅</div>
+      <h2>Голос принят!</h2>
+      <p>Спасибо! Результаты голосования уже обновились.</p>
+      <a href="results.html" class="btn-results">Смотреть результаты</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+firebase.initializeApp({
+  apiKey: "AIzaSyBqhrRdHleFnw4XHj0TP1vzbKFFaBTSwbg",
+  authDomain: "anketa-d2b2f.firebaseapp.com",
+  projectId: "anketa-d2b2f",
+  storageBucket: "anketa-d2b2f.firebasestorage.app",
+  messagingSenderId: "756151791921",
+  appId: "1:756151791921:web:320609a1ca6dc6d7210010"
+});
+var db = firebase.firestore();
+
+var currentVoter = null;
+var candidates = [];
+var ATTENDING = ['Да, буду точно', 'Скорее всего да'];
+var ROLES = ['photo','video','score','host'];
+
+// Check if already voted
+if (localStorage.getItem('voted_dachnye_igry_2026')) {
+  document.getElementById('nameGate').style.display = 'none';
+  document.getElementById('alreadyVoted').classList.add('show');
+}
+
+// Check name button
+document.getElementById('checkNameBtn').addEventListener('click', function() {
+  var name = document.getElementById('voterName').value.trim();
+  var errEl = document.getElementById('err_name');
+  errEl.classList.remove('show');
+
+  if (!name) { errEl.textContent = 'Введи своё имя'; errEl.classList.add('show'); return; }
+
+  var btn = document.getElementById('checkNameBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Проверяем…';
+
+  db.collection('participants').get().then(function(snap) {
+    var allParticipants = [];
+    var found = null;
+    snap.forEach(function(d) {
+      var p = d.data();
+      allParticipants.push(p);
+      if (p.name && p.name.toLowerCase().trim() === name.toLowerCase().trim()) found = p;
+    });
+
+    if (!found) {
+      btn.disabled = false; btn.innerHTML = 'Войти в голосование';
+      errEl.textContent = 'Имя не найдено в анкетах — проверь написание'; errEl.classList.add('show');
+      return;
+    }
+
+    // Get candidates — only attending
+    candidates = allParticipants.filter(function(p) {
+      return ATTENDING.indexOf(p.attend) !== -1;
+    });
+
+    currentVoter = found;
+    document.getElementById('greetName').textContent = found.name.split(' ')[0];
+    renderCandidates();
+    document.getElementById('nameGate').style.display = 'none';
+    document.getElementById('voteForm').classList.add('show');
+  }).catch(function() {
+    btn.disabled = false; btn.innerHTML = 'Войти в голосование';
+    errEl.textContent = 'Ошибка соединения'; errEl.classList.add('show');
+  });
+});
+
+function renderCandidates() {
+  ROLES.forEach(function(role) {
+    var el = document.getElementById('cand-' + role);
+    el.innerHTML = candidates.map(function(p) {
+      return '<label class="candidate">' +
+        '<input type="radio" name="role_' + role + '" value="' + p.name + '"/>' +
+        '<div class="cdot"></div>' +
+        '<span class="cname">' + p.name + '</span>' +
+        '<span class="cage">' + (p.age || '') + '</span>' +
+      '</label>';
+    }).join('');
+
+    // Add click handlers
+    el.querySelectorAll('.candidate').forEach(function(lbl) {
+      lbl.addEventListener('click', function() {
+        el.querySelectorAll('.candidate').forEach(function(x) { x.classList.remove('selected'); });
+        lbl.classList.add('selected');
+        lbl.querySelector('input').checked = true;
+      });
+    });
+  });
+}
+
+function getRadio(name) {
+  var el = document.querySelector('input[name="' + name + '"]:checked');
+  return el ? el.value : '';
+}
+
+document.getElementById('submitVoteBtn').addEventListener('click', function() {
+  var photo = getRadio('role_photo');
+  var video = getRadio('role_video');
+  var score = getRadio('role_score');
+  var host  = getRadio('role_host');
+
+  var ok = true;
+  ['photo','video','score','host'].forEach(function(r) {
+    var val = getRadio('role_' + r);
+    var err = document.getElementById('err_' + r);
+    if (!val) { err.classList.add('show'); ok = false; }
+    else err.classList.remove('show');
+  });
+  document.getElementById('err_global').classList.toggle('show', !ok);
+  if (!ok) return;
+
+  var btn = document.getElementById('submitVoteBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Отправляем…';
+
+  var vote = {
+    voter: currentVoter.name,
+    photo: photo,
+    video: video,
+    score: score,
+    host:  host,
+    ts: new Date().toISOString()
+  };
+
+  db.collection('votes').add(vote).then(function() {
+    localStorage.setItem('voted_dachnye_igry_2026', '1');
+    document.getElementById('voteForm').classList.remove('show');
+    document.getElementById('alreadyVoted').classList.add('show');
+    window.scrollTo({top:0, behavior:'smooth'});
+  }).catch(function() {
+    btn.disabled = false;
+    btn.innerHTML = '🗳 Отправить голос';
+    document.getElementById('err_global').textContent = 'Ошибка соединения — попробуй снова';
+    document.getElementById('err_global').classList.add('show');
+  });
+});
+</script>
+
+</body>
+</html>
