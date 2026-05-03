@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="favicon.png">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Распределение ролей — Дачные Игры</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Unbounded:wght@400;600;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<style>
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:radial-gradient(ellipse at 50% 0%,#1e3a08 0%,#0c1804 50%,#060e02 100%);min-height:100vh;font-family:‘Caveat’,cursive;color:#f8f0d8;overflow-x:hidden;}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid #1a3008;background:rgba(6,14,2,.92);backdrop-filter:blur(8px);position:sticky;top:0;z-index:50;}
+.nav-back{font-family:‘Unbounded’,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#5a8030;text-decoration:none;}
+.nav-back:hover{color:#e8b828;}
+.nav-title{font-family:‘Playfair Display’,serif;font-size:15px;color:#e8b828;}
+.container{max-width:560px;margin:0 auto;padding:0 16px 60px;}
+.page-header{text-align:center;padding:28px 0 16px;}
+.page-header h1{font-family:‘Playfair Display’,serif;font-size:clamp(22px,6vw,32px);color:#e8b828;text-shadow:0 0 30px rgba(232,184,40,.35);letter-spacing:2px;margin-bottom:6px;}
+.page-header p{font-family:‘Unbounded’,sans-serif;font-size:8px;letter-spacing:5px;text-transform:uppercase;color:#4a7828;}
+.gold-line{width:180px;height:1px;background:linear-gradient(90deg,transparent,#e8b828,transparent);margin:14px auto;}
+.total-votes{font-family:‘Unbounded’,sans-serif;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#4a7828;text-align:center;margin-bottom:20px;}
+
+/* ROLE RESULT CARD */
+.role-result{background:linear-gradient(160deg,#162208,#0c1604);border:1px solid #3a5820;border-radius:8px;overflow:hidden;margin-bottom:14px;}
+.role-result-header{background:linear-gradient(90deg,#1e3a08,#2a5010,#1e3a08);border-bottom:1px solid #a07810;padding:12px 18px;display:flex;align-items:center;gap:10px;}
+.role-result-icon{font-size:22px;}
+.role-result-name{font-family:‘Unbounded’,sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#e8b828;}
+.role-result-body{padding:14px 16px;}
+
+/* WINNER */
+.winner-block{display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(232,184,40,.08);border:1px solid #a07810;border-radius:6px;margin-bottom:10px;}
+.winner-crown{font-size:24px;flex-shrink:0;}
+.winner-info{flex:1;}
+.winner-label{font-family:‘Unbounded’,sans-serif;font-size:7px;letter-spacing:2px;text-transform:uppercase;color:#a07810;margin-bottom:2px;}
+.winner-name{font-family:‘Playfair Display’,serif;font-size:19px;color:#fff0a0;}
+.winner-votes{font-family:‘Unbounded’,sans-serif;font-size:8px;letter-spacing:1px;color:#5a8030;margin-top:2px;}
+
+/* OVERRIDE badge */
+.override-badge{font-family:‘Unbounded’,sans-serif;font-size:7px;letter-spacing:2px;text-transform:uppercase;padding:3px 8px;border:1px solid #a07810;border-radius:10px;color:#e8b828;margin-left:8px;}
+
+/* BAR CHART */
+.bar-list{display:flex;flex-direction:column;gap:6px;}
+.bar-item{display:flex;align-items:center;gap:8px;}
+.bar-name{font-family:‘Playfair Display’,serif;font-size:15px;color:#f8f0d8;width:140px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.bar-track{flex:1;background:rgba(0,0,0,.3);border-radius:10px;height:8px;overflow:hidden;}
+.bar-fill{height:100%;background:linear-gradient(90deg,#2a6010,#4a9828);border-radius:10px;transition:width .5s ease;}
+.bar-count{font-family:‘Unbounded’,sans-serif;font-size:8px;color:#4a7020;width:24px;text-align:right;flex-shrink:0;}
+
+/* VOTE LINK */
+.vote-link{display:block;width:100%;padding:14px;background:linear-gradient(135deg,#3a7010,#2a5808);border:1px solid #a07810;border-radius:4px;color:#fff0a0;font-family:‘Unbounded’,sans-serif;font-size:11px;letter-spacing:4px;text-transform:uppercase;text-align:center;text-decoration:none;margin-top:24px;transition:all .3s;}
+.vote-link:hover{background:linear-gradient(135deg,#4a8818,#386010);}
+.back-btn{display:block;width:100%;padding:13px;background:transparent;border:1px solid #3a5820;border-radius:4px;color:#5a8030;font-family:‘Unbounded’,sans-serif;font-size:9px;letter-spacing:3px;text-transform:uppercase;text-align:center;text-decoration:none;margin-top:10px;transition:all .3s;}
+.back-btn:hover{border-color:#a07810;color:#e8b828;}
+.loading{text-align:center;padding:40px;font-family:‘Caveat’,cursive;font-size:18px;color:#4a7020;}
+</style>
+
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-back">‹ На главную</a>
+  <span class="nav-title">Распределение ролей</span>
+  <span></span>
+</nav>
+
+<div class="container">
+  <div class="page-header">
+    <h1>Распределение ролей</h1>
+    <p>Дачные Игры · Кубок Четырёх Фамилий · MMXXVI</p>
+    <div class="gold-line"></div>
+  </div>
+
+  <div class="loading" id="loading">⏳ Загружаем результаты…</div>
+  <div id="totalVotes" class="total-votes" style="display:none;"></div>
+  <div id="resultsWrap"></div>
+
+  <div style="margin-top:28px;background:linear-gradient(160deg,#162208,#0c1604);border:1px solid #3a5820;border-radius:8px;padding:20px 16px;text-align:center;">
+    <p style="font-family:'Playfair Display',serif;font-size:17px;color:#f8f0d8;margin-bottom:14px;line-height:1.5;">Ещё не голосовали?</p>
+    <a href="vote.html" class="vote-link" style="margin-top:0;">🗳 Проголосовать</a>
+  </div>
+  <a href="index.html" class="back-btn">‹ На главную</a>
+</div>
+
+<script>
+firebase.initializeApp({
+  apiKey: "AIzaSyBqhrRdHleFnw4XHj0TP1vzbKFFaBTSwbg",
+  authDomain: "anketa-d2b2f.firebaseapp.com",
+  projectId: "anketa-d2b2f",
+  storageBucket: "anketa-d2b2f.firebasestorage.app",
+  messagingSenderId: "756151791921",
+  appId: "1:756151791921:web:320609a1ca6dc6d7210010"
+});
+var db = firebase.firestore();
+
+var ROLES = [
+  { key:'photo', icon:'📸', name:'Фотограф',        winners:2 },
+  { key:'video', icon:'🎬', name:'Видеограф',        winners:1 },
+  { key:'score', icon:'📊', name:'Хранитель счёта',  winners:1 },
+  { key:'host',  icon:'🎤', name:'Комментатор',      winners:1 },
+];
+
+function countVotes(votes, role) {
+  var counts = {};
+  votes.forEach(function(v) {
+    var name = v[role];
+    if (name) counts[name] = (counts[name] || 0) + 1;
+  });
+  return counts;
+}
+
+function renderResults(votes, overrides, announced) {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('totalVotes').style.display = 'block';
+  document.getElementById('totalVotes').textContent = 'Проголосовало: ' + votes.length + ' человек';
+
+  var totalVotesCount = votes.length;
+  var wrap = document.getElementById('resultsWrap');
+  wrap.innerHTML = ROLES.map(function(role) {
+    var counts = countVotes(votes, role.key);
+    var sorted = Object.keys(counts).sort(function(a,b){ return counts[b]-counts[a]; });
+    var maxVotes = sorted.length ? counts[sorted[0]] : 1;
+
+    // Leaders — by votes or override
+    var roleOverrides = overrides[role.key] || [];
+    var leaders = roleOverrides.length ? roleOverrides : sorted.slice(0, role.winners);
+    var isAnnounced = announced && roleOverrides.length > 0;
+
+    var leadersHtml = leaders.length ? leaders.map(function(name) {
+      var isOverride = roleOverrides.indexOf(name) !== -1;
+      var voteCount = counts[name] || 0;
+      var pct = totalVotesCount > 0 ? Math.round(voteCount / totalVotesCount * 100) : 0;
+      var label = isAnnounced ? 'Победитель' : 'Лидирует';
+      var crown = isAnnounced ? '🏆' : '📊';
+      return '<div class="winner-block">' +
+        '<span class="winner-crown">' + crown + '</span>' +
+        '<div class="winner-info">' +
+          '<div class="winner-label">' + label + (isOverride && isAnnounced ? ' · назначен организатором' : '') + '</div>' +
+          '<div class="winner-name">' + name + (isOverride && isAnnounced ? '<span class="override-badge">★</span>' : '') + '</div>' +
+          '<div class="winner-votes">' + voteCount + ' ' + pluralVotes(voteCount) + ' · ' + pct + '%</div>' +
+        '</div>' +
+      '</div>';
+    }).join('') : '';
+
+    var barsHtml = sorted.length ? '<div class="bar-list">' + sorted.map(function(name) {
+      var realPct = totalVotesCount > 0 ? Math.round(counts[name] / totalVotesCount * 100) : 0;
+      var barPct = maxVotes > 0 ? (counts[name] / maxVotes * 100) : 0;
+      return '<div class="bar-item">' +
+        '<span class="bar-name">' + name.split(' ')[0] + '</span>' +
+        '<div class="bar-track"><div class="bar-fill" style="width:' + barPct + '%"></div></div>' +
+        '<span class="bar-count">' + realPct + '%</span>' +
+      '</div>';
+    }).join('') + '</div>' : '<p style="font-family:Caveat,cursive;font-size:16px;color:#3a5820;text-align:center;">Голосов пока нет</p>';
+
+    return '<div class="role-result">' +
+      '<div class="role-result-header">' +
+        '<span class="role-result-icon">' + role.icon + '</span>' +
+        '<span class="role-result-name">' + role.name + '</span>' +
+      '</div>' +
+      '<div class="role-result-body">' +
+        leadersHtml +
+        barsHtml +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function pluralVotes(n) {
+  if (n % 10 === 1 && n % 100 !== 11) return 'голос';
+  if ([2,3,4].indexOf(n % 10) !== -1 && [12,13,14].indexOf(n % 100) === -1) return 'голоса';
+  return 'голосов';
+}
+
+// Load votes and overrides
+Promise.all([
+  db.collection('votes').get(),
+  db.collection('vote_overrides').doc('overrides').get()
+]).then(function(results) {
+  var votes = [];
+  results[0].forEach(function(d) { votes.push(d.data()); });
+  var overrides = results[1].exists ? results[1].data() : {};
+  var announced = results[1].exists && results[1].data().announced === true;
+  renderResults(votes, overrides, announced);
+}).catch(function() {
+  document.getElementById('loading').textContent = 'Ошибка загрузки — проверь соединение';
+});
+</script>
+
+</body>
+</html>
