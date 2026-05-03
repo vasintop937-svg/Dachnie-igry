@@ -3,8 +3,26 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-  <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="apple-touch-icon" href="favicon.png">
+<script>
+(function() {
+  var KEY = 'dacha2026';
+  var STORAGE_KEY = 'igry_access';
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('key') === KEY) {
+    localStorage.setItem(STORAGE_KEY, '1');
+  }
+  if (!localStorage.getItem(STORAGE_KEY)) {
+    document.documentElement.style.display = 'none';
+    document.addEventListener('DOMContentLoaded', function() {
+      document.documentElement.style.display = '';
+      document.body.innerHTML = '<div style="background:#060e02;min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;text-align:center;padding:20px;"><div style="max-width:400px;"><div style="font-size:64px;margin-bottom:20px;">🔒</div><h1 style="color:#e8b828;font-size:28px;margin-bottom:12px;letter-spacing:2px;">Игры Династий</h1><p style="color:#a0c870;font-size:16px;line-height:1.6;margin-bottom:24px;">Этот сайт доступен только для участников семейного турнира.</p><p style="color:#5a8030;font-size:13px;">Если ты получил приглашение — используй ссылку из семейного чата.</p></div></div>';
+    });
+  }
+})();
+</script>
+
+  <link rel="icon" type="image/png" href="favicon.PNG">
+  <link rel="apple-touch-icon" href="favicon.PNG">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Анкета — Дачные Игры</title>
